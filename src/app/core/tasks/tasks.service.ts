@@ -24,15 +24,15 @@ export class TasksService {
   }
 
   criarTask(task){
-    return this.http.post(API_URL, task)
+    return this.http.post(API_URL, task ,{observe : 'body'})
   }
 
   atualizarTask(task: Task){
-    return this.http.put(API_URL, task)
+    return this.http.put(API_URL+'/'+task.id, task, {observe : 'body'})
   }
 
   deletarTask(task: Task){
-    return this.http.delete(API_URL)
+    return this.http.delete(API_URL+'/'+task.id)
   }
 
   setTasks(tasks){

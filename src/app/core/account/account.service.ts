@@ -4,6 +4,8 @@ import { tap } from 'rxjs/operators'
 
 const API_URL = "http://localhost:3000/account"
 
+const KEY = 'authToken';
+
 @Injectable({
   providedIn: 'root'
 })

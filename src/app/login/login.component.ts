@@ -31,7 +31,6 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    console.log("Chamei o login")
     const user = this.loginForm.get('user').value;
     const password = this.loginForm.get('password').value;
     this.account.authenticate(user, password)

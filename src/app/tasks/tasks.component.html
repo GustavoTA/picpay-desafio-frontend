@@ -12,7 +12,7 @@
             <h1><b>Meus pagamentos</b></h1>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-primary" (click)="open(mymodal)">ADICIONAR PAGAMENTO</button>
+            <button type="button" class="btn btn-primary" (click)="novoPagamento();open(mdpagamento)">ADICIONAR PAGAMENTO</button>
         </div>
     <!-- Formulario de pesquisa + paginação-->
     <div class="row bg-white pt-3">
@@ -57,7 +57,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                <th scope="col-3">Usuario</th>
+                <th scope="col-3">Usuário</th>
                 <th scope="col-2">Titulo</th>
                 <th scope="col-2">Data</th>
                 <th scope="col-2">Valor</th>
@@ -77,10 +77,10 @@
                         <input type="checkbox" *ngIf="!rowTask.isPayed"/>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-outline-dark btn-table"><fa-icon [icon]="faPen"></fa-icon></button>
+                        <button type="button" (click)="atualizarPagamento(rowTask);open(mdpagamento)" class="btn btn-outline-dark btn-table"><fa-icon [icon]="faPen"></fa-icon></button>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-outline-dark btn-table"><fa-icon [icon]="faTimesCircle" ></fa-icon></button>
+                        <button type="button" (click)="deletarPagamento(rowTask);open(mdPagamentoDelete)" class="btn btn-outline-dark btn-table"><fa-icon [icon]="faTimesCircle" ></fa-icon></button>
                     </td>
                 </tr>
             </tbody>
@@ -90,31 +90,59 @@
 </div>
 </div>
 
-<ng-template #mymodal let-modal>
-    <div class="modal-body container">
+<ng-template #mdpagamento let-modal>
+    <div class="modal-body container p-3">
         <div class="row">
-            <h4 class="modal-title" id="modal-basic-title">Adicionar Pegamento</h4>
+
+            <h4 class="modal-title" id="modal-basic-title">{{tipo}} Pegamento</h4>
 
         </div>
-        <div class="row">
-            <div class="col">
-                <input type="text" [(ngModel)]="usuario" placeholder="usuário*" class="form-control"/>
+        <form [formGroup]="pagamentoForm" class="form g-3 mt-5" (submit)="pagamento()">
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="text" formControlName="usuario" placeholder="usuário*" class="form-control"/>
+                </div>
+                <div class="col-6">
+                    <input type="number" formControlName="valor" placeholder="valor*" class="form-control"/>
+                </div>
+                <div class="col-6">
+                    <input type="datetime-local" formControlName="data" placeholder="data*" class="form-control"/>
+                </div>
+                <div class="col-6">
+                    <input type="text" formControlName="titulo" placeholder="titulo" class="form-control"/>
+                </div>
             </div>
-            <div class="col">
-                <input type="float" [(ngModel)]="valor" placeholder="valor*" class="form-control"/>
+            <div class="row mt-3">
+                <div class="col-1 offset-6">
+                    <button type="button" class="btn btn-light" (click)="modal.close()">CANCELAR</button>
+                </div>
+                <div class="col-1 offset-2">
+                    <button type="submit" [disabled]="pagamentoForm.invalid" class="btn btn-primary" (click)="modal.close();">SALVAR</button>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <input type="date" [(ngModel)]="data" placeholder="data*" class="form-control"/>
-            </div>
-            <div class="col">
-                <input type="text" [(ngModel)]="titulo" placeholder="titulo" class="form-control"/>
-            </div>
-        </div>
 
+        </form>
+    </div>
+  </ng-template>
+
+  <ng-template #mdPagamentoDelete let-modal>
+    <div class="modal-body container p-3">
+        <div class="row">
+            <h4 class="modal-title" id="modal-basic-title">{{tipo}} Pegamento</h4>
+        </div>
+        <div class="row">
+            <span>Usuário: {{task.name}}</span>
+            <span>Data: {{task.date | date : 'dd MMM yyyy'}}</span>
+            <span>Valor: {{task.value | currency : 'BRL'}}</span>
+        </div>
+        <div class="row mt-3">
+            <div class="col-1 offset-6">
+                <button type="button" class="btn btn-light" (click)="modal.close()">CANCELAR</button>
+            </div>
+            <div class="col-1 offset-2">
+                <button type="submit" class="btn btn-primary" (click)="modal.close(); pagamento()">DELETAR</button>
+            </div>
+        </div>
         
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">CANCELAR</button>
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">SALVAR</button>
     </div>
   </ng-template>

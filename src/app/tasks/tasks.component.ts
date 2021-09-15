@@ -4,7 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Task } from '../core/tasks/task';
 import { faSearch, faPen, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { isNull } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -37,7 +39,11 @@ export class TasksComponent implements OnInit {
   data: Date
   titulo: string
 
-  constructor(private taskService: TasksService, private modalService: NgbModal) {
+  pagamentoForm: FormGroup
+  task: Task = new Task
+  tipo: string
+
+  constructor(private taskService: TasksService, private modalService: NgbModal,  private formBuilder: FormBuilder) {
     this.taskService.totalTasks()
     //Usar o Pipe para esperar a requisição assincrona acontecer, antes de seguir com o fluxo, não é possivel fazer no ngOnInit, pq a requisição leva mais tempo q a pagina carregar
     .pipe(tap(res =>{    
@@ -48,6 +54,14 @@ export class TasksComponent implements OnInit {
     this.taskService.listarTasks(this.page, this.limit)
     .subscribe(tasks => {this.taskService.setTasks(tasks)})
     this.tasksLista$ = this.taskService.getTasks()
+
+    this.pagamentoForm = this.formBuilder.group({
+      usuario: ['', Validators.required],
+      valor: ['', Validators.required ],
+      data: ['', Validators.required],
+      titulo: ['', Validators.required],
+
+    })
   }
 
   ngOnInit(): void {
@@ -95,9 +109,59 @@ export class TasksComponent implements OnInit {
     this.taskService.listarTasks(this.page, this.limit).subscribe(res => this.taskService.setTasks(res))
   }
 
+  novoPagamento(){
+    this.limparTask()
+    this.pagamentoForm.setValue({usuario: '', valor : '', data : '', titulo : ''})
+    this.tipo = 'Adicionar'
+  }
+
+  atualizarPagamento(mytask){
+    this.limparTask()
+    this.tipo = 'Atualizar'
+    let myDate = mytask.date
+    this.task = mytask
+    myDate = myDate.toString().substring(0, 16)
+    this.pagamentoForm.setValue({usuario: mytask.name, valor : mytask.value, data : myDate, titulo : mytask.title}) 
+  }
+
+  deletarPagamento(mytask){
+    this.limparTask()
+    this.tipo = 'Deletar'
+    this.task = mytask
+  }
+
+  pagamento(){
+    this.task.name = this.pagamentoForm.get('usuario').value
+    this.task.value  = this.pagamentoForm.get('valor').value
+    this.task.date = this.pagamentoForm.get('data').value
+    this.task.title = this.pagamentoForm.get('titulo').value
+    switch (this.tipo){
+      case 'Adicionar':
+        this.taskService.criarTask(this.task).subscribe(res => console.log(res))
+        break
+      case 'Atualizar':
+        this.taskService.atualizarTask(this.task).subscribe(res => console.log(res))
+        break
+      case 'Deletar':
+        this.taskService.deletarTask(this.task).subscribe(res => console.log(res))
+        break
+    }
+    this.paginar(this.page)
+  }
+
+  limparTask(){
+    this.task.id = null
+    this.task.date = null
+    this.task.image = null
+    this.task.isPlayed = false
+    this.task.title = null
+    this.task.username = null 
+    this.task.value = null
+    this.task.name = null
+  }
 
   open(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    this.modalService.open(content, { centered: true }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
