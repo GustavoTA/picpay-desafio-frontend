@@ -1,0 +1,50 @@
+.bg-primary{
+    background-color: rgba(0, 45, 105, 1) !important;
+}
+
+h3{
+    margin-left: 1em;
+}
+
+.col-titulo{
+    padding-left: 0px !important;
+}
+
+.filtro{
+    border-right: none;
+}
+.filtro-grupo-icone{
+    background-color: #fff;
+    border-radius: 0 .25rem .25rem 0;
+}
+
+.icon{
+    max-width: 25px;
+    vertical-align: initial;
+}
+
+.btn-filter{
+    background-color: rgba(230, 236, 240, 1);
+    color: rgba(45, 53, 64, 1);
+    border-radius: .25rem;
+}
+
+#selectLimit{
+    display: initial;
+    margin-left: 5px;
+    width: fit-content;
+}
+
+.page-link{
+    border: none;
+    color: #000;
+}
+
+.page-selected{
+    background: rgba(0, 125, 254, 1);
+    color: rgba(255, 255, 255, 1);
+}
+
+.btn-table{
+    border: none;
+}

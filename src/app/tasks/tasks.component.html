@@ -1,0 +1,120 @@
+<header class="d-inline">
+    <div class=" p-4 bg-primary text-white">
+        <h3 class="ml-4"><b>Pay</b>Friends</h3>
+    </div>
+</header>
+
+
+<div class="container bg-light">
+    <!-- Cabeçario -->
+    <div class="row pt-4 pb-4 justify-content-between row-grudada">
+        <div class="col-auto col-titulo">
+            <h1><b>Meus pagamentos</b></h1>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary" (click)="open(mymodal)">ADICIONAR PAGAMENTO</button>
+        </div>
+    <!-- Formulario de pesquisa + paginação-->
+    <div class="row bg-white pt-3">
+
+        <div class="col-3">
+            <div class="input-group">
+                <input type="text" class="form-control filtro" placeholder="pesquisar por usuário" [(ngModel)]="filtro"/>
+                <div class="input-group-append">
+                  <span class="input-group-text filtro-grupo-icone"><fa-icon [icon]="faSearch"></fa-icon> </span>
+                </div>
+              </div>
+        </div>
+        <div class="col">
+            <button id="tipoFiltro" class="btn btn-filter"><img class="icon" src="../../assets/iconfilter.png"/> Filtrar</button>
+        </div>
+        <div class="col-2">
+            <label for="selectLimit" class="form-label"><small>Exibir</small></label>
+            <select id="selectLimit" class="form-select form-select-sm" [(ngModel)]="limit" (change)="paginar(1)">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+        <div class="col-3">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  <li class="page-item"><button class="page-link" (click)="paginar('previous')"><</button></li>
+
+                  <div *ngFor="let pages of arrayPages">
+                    <li class="page-item"><button class="page-link" [ngClass]="{'page-selected': pages === page}" (click)="paginar(this.pages)">{{pages}}</button></li>
+                  </div>
+
+
+                  <li class="page-item"><button class="page-link" (click)="paginar('next')">></button></li>
+                  
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="row bg-white p-2">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col-3">Usuario</th>
+                <th scope="col-2">Titulo</th>
+                <th scope="col-2">Data</th>
+                <th scope="col-2">Valor</th>
+                <th scope="col-1">Pago</th>
+                <th scope="col-1"></th>
+                <th scope="col-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let rowTask of tableTask">
+                    <td>{{rowTask.name}}<br><small class="text-center text-secondary">@{{rowTask.username}}</small></td>
+                    <td>{{rowTask.title}}</td>
+                    <td>{{rowTask.date | date: 'dd MMM yyyy'}} <br> <small>{{rowTask.date | date: 'h:mm a'}}</small></td>
+                    <td>{{rowTask.value | currency : 'BRL'}}</td>
+                    <td>
+                        <input type="checkbox" *ngIf="rowTask.isPayed" checked/>
+                        <input type="checkbox" *ngIf="!rowTask.isPayed"/>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-dark btn-table"><fa-icon [icon]="faPen"></fa-icon></button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-dark btn-table"><fa-icon [icon]="faTimesCircle" ></fa-icon></button>
+                    </td>
+                </tr>
+            </tbody>
+            
+        </table>
+    </div>
+</div>
+</div>
+
+<ng-template #mymodal let-modal>
+    <div class="modal-body container">
+        <div class="row">
+            <h4 class="modal-title" id="modal-basic-title">Adicionar Pegamento</h4>
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <input type="text" [(ngModel)]="usuario" placeholder="usuário*" class="form-control"/>
+            </div>
+            <div class="col">
+                <input type="float" [(ngModel)]="valor" placeholder="valor*" class="form-control"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <input type="date" [(ngModel)]="data" placeholder="data*" class="form-control"/>
+            </div>
+            <div class="col">
+                <input type="text" [(ngModel)]="titulo" placeholder="titulo" class="form-control"/>
+            </div>
+        </div>
+
+        
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">CANCELAR</button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">SALVAR</button>
+    </div>
+  </ng-template>
